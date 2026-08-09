@@ -1,0 +1,8 @@
+{
+  "name": "Draw.io to Word Converter",
+  "description": "Convert draw.io diagrams into editable native Word shapes (.docx)",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
