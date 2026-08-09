@@ -377,8 +377,9 @@ export function vertexWsp(cell: Element, z: number, name: string, cellsMap?: Map
     const value = cell.getAttribute('value') || '';
 
     const isGroup = style['group'] === '1' || style['group'] === 'true' || (cell.getAttribute('style') || '').includes('group');
-    const noFill = style['fillColor'] === 'none' || (isGroup && !style['fillColor']);
-    const noStroke = style['strokeColor'] === 'none' || (isGroup && !style['strokeColor']);
+    const isText = style['text'] === '1' || style['shape'] === 'text' || style['label'] === '1' || style['shape'] === 'label';
+    const noFill = style['fillColor'] === 'none' || (isGroup && !style['fillColor']) || (isText && !style['fillColor']);
+    const noStroke = style['strokeColor'] === 'none' || (isGroup && !style['strokeColor']) || (isText && !style['strokeColor']);
 
     const lines = value ? parseValue(value) : [];
 
@@ -997,12 +998,13 @@ export function edgeLabelWsp(cell: Element, z: number, name: string, cells: Map<
     const fillAttr = style['labelBackgroundColor'];
     const strokeAttr = style['labelBorderColor'];
 
-    const fill = (fillAttr && fillAttr !== 'none') ? color6(fillAttr, 'FFFFFF') : 'FFFFFF';
-    const fillXml = `<a:solidFill><a:srgbClr val="${fill}"/></a:solidFill>`;
+    const fillXml = (fillAttr && fillAttr !== 'none') 
+        ? `<a:solidFill><a:srgbClr val="${color6(fillAttr, 'FFFFFF')}"/></a:solidFill>` 
+        : `<a:noFill/>`;
 
-    const noStroke = !strokeAttr || strokeAttr === 'none';
-    const stroke = noStroke ? '000000' : color6(strokeAttr, '000000');
-    const strokeXml = noStroke ? `<a:ln><a:noFill/></a:ln>` : `<a:ln w="12700"><a:solidFill><a:srgbClr val="${stroke}"/></a:solidFill></a:ln>`;
+    const strokeXml = (strokeAttr && strokeAttr !== 'none') 
+        ? `<a:ln w="12700"><a:solidFill><a:srgbClr val="${color6(strokeAttr, '000000')}"/></a:solidFill></a:ln>` 
+        : `<a:ln><a:noFill/></a:ln>`;
 
     const relX = Math.round((x - minX) * EMU);
     const relY = Math.round((y - minY) * EMU);
